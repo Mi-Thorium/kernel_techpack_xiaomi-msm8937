@@ -512,6 +512,7 @@ void gup_leave_update_mode(void)
 
 static u8 gup_enter_update_judge(st_fw_head *fw_head)
 {
+#if 0
 	u16 u16_tmp;
 	s32 i = 0;
 	u32 fw_len = 0;
@@ -591,6 +592,10 @@ static u8 gup_enter_update_judge(st_fw_head *fw_head)
 	}
 
 	return FAIL;
+#else
+	GTP_INFO("Force Updating Firmware...");
+	return SUCCESS;
+#endif
 }
 
 
