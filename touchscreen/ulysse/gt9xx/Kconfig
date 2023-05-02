@@ -4,7 +4,6 @@
 
 config GT9XX_TOUCHPANEL_DRIVER
 	tristate "Goodix GT9xx touchpanel driver"
-	depends on TOUCHSCREEN_GT9XX
 	default n
 	help
 	  This is the main file for touchpanel driver for Goodix GT9xx
