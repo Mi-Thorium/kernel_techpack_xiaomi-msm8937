@@ -67,7 +67,8 @@ struct pctrl_data *pin_data = NULL;
 #endif
 u8 g_fwver = 255;
 char g_fwver_buff[128];
-extern char g_lcd_id[128];
+#define MDSS_MAX_PANEL_LEN 256
+extern char mdss_mdp_panel[MDSS_MAX_PANEL_LEN];
 static struct work_struct g_resume_work;
 struct mutex ft5435_resume_mutex;
 
@@ -1013,7 +1014,7 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 	int err;
 
 	FTS_FUNC_ENTER();
-	if (strstr(g_lcd_id, "shenchao") == NULL) {
+	if (strstr(mdss_mdp_panel, "shenchao") == NULL) {
 	FTS_INFO("not the focaltech tp,skiping the focaltech probe func");
 		return -ENODEV;
 	}

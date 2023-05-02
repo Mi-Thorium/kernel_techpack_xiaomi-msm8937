@@ -36,7 +36,8 @@ char fw_version[64];
 char gt9xx_tp_lockdown_info[128];
 u16 version_info;
 unsigned char get_lockdown_info(struct i2c_client *client, char *pProjectCode);
-extern char g_lcd_id[128];
+#define MDSS_MAX_PANEL_LEN 256
+extern char mdss_mdp_panel[MDSS_MAX_PANEL_LEN];
 #if GTP_CHARGER_SWITCH
 extern bool g_charger_present;
 static int clk_tick_cnt_charger = 200;
@@ -2264,7 +2265,7 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
 	struct goodix_ts_data *ts;
 
 	GTP_DEBUG_FUNC();
-	if (strstr(g_lcd_id, "shenchao") != NULL) {
+	if (strstr(mdss_mdp_panel, "shenchao") != NULL) {
 	GTP_INFO("not the goodix tp,skiping the gt9xx probe func");
 		return -ENODEV;
 	}
