@@ -1,0 +1,6 @@
+menu "Touchscreen (ulysse)"
+
+source "techpack/xiaomi-msm8937/touchscreen/ulysse/gt9xx/Kconfig"
+source "techpack/xiaomi-msm8937/touchscreen/ulysse/ft5435/Kconfig"
+
+endmenu
