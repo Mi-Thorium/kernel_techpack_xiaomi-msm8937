@@ -18,12 +18,10 @@
 
 #include "../focaltech_core.h"
 #include "../focaltech_flash.h"
-#include <linux/wakelock.h>
 #include <linux/timer.h>
 
 #define FTS_GET_UPGRADE_TIME                    0
 
-struct wake_lock ps_lock;
 
 #define FTS_DEBUG_UPGRADE(fmt, args...) do {\
 									printk(KERN_ERR "[FTS][UPGRADE]:##############################################################################\n");\
@@ -84,9 +82,9 @@ int fts_ctpm_auto_upgrade(struct i2c_client *client)
 	static int uc_ErrorTimes = 0;
 	static int uc_UpgradeTimes = 0;
 
-	wake_lock_init(&ps_lock, WAKE_LOCK_SUSPEND, "tp_wakelock");
 
-	wake_lock(&ps_lock);
+	device_init_wakeup(&client->dev, 1);
+	pm_stay_awake(&client->dev);
 
 	g_fw_file = CTPM_FW;
 	g_fw_len = fts_getsize(FW_SIZE);
@@ -110,7 +108,8 @@ int fts_ctpm_auto_upgrade(struct i2c_client *client)
 	}
 	while (uc_UpgradeTimes < (FTS_UPGRADE_TEST_NUMBER));
 
-	wake_unlock(&ps_lock);
+	pm_relax(&client->dev);
+	device_init_wakeup(&client->dev, 0);
 
 	return 0;
 }
