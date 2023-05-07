@@ -174,13 +174,13 @@
  * Linux MultiTouch Protocol
  * 1: Protocol B(default), 0: Protocol A
  */
-#define FTS_MT_PROTOCOL_B_EN                    1
+#define FTS_MT_PROTOCOL_B_EN                    0
 
 /*
  * Report Pressure in multitouch
  * 1:enable(default),0:disable
 */
-#define FTS_REPORT_PRESSURE_EN                  1
+#define FTS_REPORT_PRESSURE_EN                  0
 
 /*
  * Gesture function enable
@@ -192,7 +192,7 @@
  * ESD check & protection
  * default: disable
  */
-#define FTS_ESDCHECK_EN                         1
+#define FTS_ESDCHECK_EN                         0
 
 /*
  * Production test enable
