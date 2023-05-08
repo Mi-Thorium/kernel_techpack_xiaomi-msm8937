@@ -1961,10 +1961,17 @@ static int fts_read_parse_touchdata(struct fts_ts_data *data)
 		}
 
 		data->touch_point++;
+#if 0
 		events[i].x = ((buf[FTS_TOUCH_X_H_POS + base] & 0x0F) << 8) +
 				(buf[FTS_TOUCH_X_L_POS + base] & 0xFF);
 		events[i].y = ((buf[FTS_TOUCH_Y_H_POS + base] & 0x0F) << 8) +
 				(buf[FTS_TOUCH_Y_L_POS + base] & 0xFF);
+#else
+		events[i].x = ((buf[FTS_TOUCH_X_H_POS + base] & 0x0F) << 8) |
+				(buf[FTS_TOUCH_X_L_POS + base]);
+		events[i].y = ((buf[FTS_TOUCH_Y_H_POS + base] & 0x0F) << 8) |
+				(buf[FTS_TOUCH_Y_L_POS + base]);
+#endif
 		events[i].flag = buf[FTS_TOUCH_EVENT_POS + base] >> 6;
 		events[i].id = buf[FTS_TOUCH_ID_POS + base] >> 4;
 		events[i].area = buf[FTS_TOUCH_AREA_POS + base] >> 4;
