@@ -1895,7 +1895,7 @@ static int fts_read_touchdata(struct fts_ts_data *data)
 	u8 *buf = data->point_buf;
 
 	memset(buf, 0xFF, data->pnt_buf_size);
-	buf[0] = 0x00;
+	buf[0] = 0x01;
 
 	if (data->gesture_mode) {
 		if (0 == fts_gesture_readdata(data, NULL)) {
