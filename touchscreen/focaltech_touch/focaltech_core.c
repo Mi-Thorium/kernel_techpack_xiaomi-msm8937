@@ -2814,7 +2814,7 @@ static struct xiaomi_msm8937_touchscreen_operations_t fts_mi8937_ts_ops = {
 static int fts_ts_probe_delayed(struct fts_ts_data *fts_data)
 {
 	int ret = 0;
-	u8 reg_value = 0;
+	u8 reg_addr, reg_value = 0;
 
 /* Avoid setting up hardware for TVM during probe */
 #ifdef CONFIG_FTS_TRUSTED_TOUCH
@@ -2857,6 +2857,21 @@ static int fts_ts_probe_delayed(struct fts_ts_data *fts_data)
 		FTS_ERROR("not focal IC, unregister driver");
 		goto err_get_ic;
 	}
+
+	/*get some register information */
+	reg_addr = FTS_REG_REPORT_RATE;
+	fts_read(&reg_addr, 1, &reg_value, 1);
+	if (ret < 0)
+		FTS_ERROR("report rate read failed");
+
+	FTS_INFO("report rate = %dHz\n", reg_value * 10);
+
+	reg_addr = 0x80; // FT_REG_THGROUP
+	ret = fts_read(&reg_addr, 1, &reg_value, 1);
+	if (ret < 0)
+		FTS_ERROR("threshold read failed");
+
+	FTS_INFO("touch threshold = %d\n", reg_value * 4);
 
 #ifdef CONFIG_ARCH_QTI_VM
 tvm_setup:
