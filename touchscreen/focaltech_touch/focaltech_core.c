@@ -1893,9 +1893,10 @@ static int fts_read_touchdata(struct fts_ts_data *data)
 {
 	int ret = 0;
 	u8 *buf = data->point_buf;
+	u8 reg = 0x00;
 
-	memset(buf, 0xFF, data->pnt_buf_size);
-	buf[0] = 0x01;
+	//memset(buf, 0xFF, data->pnt_buf_size);
+	//buf[0] = 0x01;
 
 	if (data->gesture_mode) {
 		if (0 == fts_gesture_readdata(data, NULL)) {
@@ -1904,7 +1905,7 @@ static int fts_read_touchdata(struct fts_ts_data *data)
 		}
 	}
 
-	ret = fts_read(buf, 1, buf + 1, data->pnt_buf_size - 1);
+	ret = fts_read(&reg, 1, buf, data->pnt_buf_size);
 	if (ret < 0) {
 		FTS_ERROR("read touchdata failed, ret:%d", ret);
 		return ret;
