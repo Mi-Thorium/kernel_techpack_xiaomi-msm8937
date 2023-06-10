@@ -1745,7 +1745,10 @@ static int smb358_battery_get_property(struct power_supply *psy,
 		val->intval = !(chip->charging_disabled_status & USER);
 		break;
 	case POWER_SUPPLY_PROP_CHARGE_TYPE:
-		val->intval = smb358_get_prop_charge_type(chip);
+		if (chip->charging_disabled_status & USER)
+			val->intval = POWER_SUPPLY_CHARGE_TYPE_NONE;
+		else
+			val->intval = smb358_get_prop_charge_type(chip);
 		break;
 	case POWER_SUPPLY_PROP_HEALTH:
 		val->intval = smb358_get_prop_batt_health(chip);
