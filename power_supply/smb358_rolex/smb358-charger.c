@@ -1001,13 +1001,11 @@ static int smb358_charging_disable(struct smb358_charger *chip,
 	if (rc) {
 		pr_err("Failed to disable charging rc = %d\n", rc);
 		return rc;
-	} else {
-	/* will not modify online status in this condition */
-		power_supply_changed(chip->batt_psy);
 	}
 
 skip:
 	chip->charging_disabled_status = disabled;
+	power_supply_changed(chip->batt_psy);
 	return rc;
 }
 
