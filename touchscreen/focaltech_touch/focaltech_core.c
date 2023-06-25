@@ -1360,6 +1360,9 @@ int fts_wait_tp_to_valid(void)
 	u8 chip_idh = fts_data->ic_info.ids.chip_idh;
 	u8 chip_idl = fts_data->ic_info.ids.chip_idl;
 
+	if (fts_data->pdata->ignore_id_check)
+		return 0;
+
 	do {
 		ret = fts_read_reg(FTS_REG_CHIP_ID, &idh);
 		ret = fts_read_reg(FTS_REG_CHIP_ID2, &idl);
