@@ -3432,14 +3432,7 @@ static int fts_ts_suspend(struct device *dev)
 		if (ret < 0)
 			FTS_ERROR("set TP to sleep mode fail, ret=%d", ret);
 
-		if (!ts_data->ic_info.is_incell) {
-#if FTS_POWER_SOURCE_CUST_EN
-			ret = fts_power_source_suspend(ts_data);
-			if (ret < 0) {
-				FTS_ERROR("power enter suspend fail");
-			}
-#endif
-		} else {
+		if (ts_data->ic_info.is_incell) {
 #if FTS_PINCTRL_EN
 			fts_pinctrl_select_suspend(ts_data);
 #endif
@@ -3505,11 +3498,7 @@ static int fts_ts_resume(struct device *dev)
 
 	fts_release_all_finger();
 
-	if (!ts_data->ic_info.is_incell) {
-#if FTS_POWER_SOURCE_CUST_EN
-		fts_power_source_resume(ts_data);
-#endif
-	} else {
+	if (ts_data->ic_info.is_incell) {
 #if FTS_PINCTRL_EN
 		fts_pinctrl_select_normal(ts_data);
 #endif
