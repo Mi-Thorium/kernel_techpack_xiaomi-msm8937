@@ -2330,11 +2330,15 @@ static int fts_pinctrl_select_release(struct fts_ts_data *ts)
 }
 #endif /* FTS_PINCTRL_EN */
 
+bool fts_power_configure_done = false;
+
 static int fts_power_configure(struct fts_ts_data *ts_data, bool enable)
 {
 	int ret = 0;
 
 	FTS_FUNC_ENTER();
+	if (fts_power_configure_done)
+		return 0;
 
 	if (enable) {
 		if (regulator_count_voltages(ts_data->vdd) > 0) {
@@ -2388,6 +2392,9 @@ static int fts_power_configure(struct fts_ts_data *ts_data, bool enable)
 			}
 		}
 	}
+
+	if (enable)
+		fts_power_configure_done = true;
 
 	FTS_FUNC_EXIT();
 	return ret;
@@ -3434,7 +3441,7 @@ static int fts_ts_suspend(struct device *dev)
 
 		if (!ts_data->ic_info.is_incell) {
 #if FTS_POWER_SOURCE_CUST_EN
-			ret = fts_power_source_suspend(ts_data);
+			ret = fts_ts_enable_reg(ts_data, false);
 			if (ret < 0) {
 				FTS_ERROR("power enter suspend fail");
 			}
@@ -3507,7 +3514,7 @@ static int fts_ts_resume(struct device *dev)
 
 	if (!ts_data->ic_info.is_incell) {
 #if FTS_POWER_SOURCE_CUST_EN
-		fts_power_source_resume(ts_data);
+		fts_ts_enable_reg(ts_data, true);
 #endif
 	} else {
 #if FTS_PINCTRL_EN
