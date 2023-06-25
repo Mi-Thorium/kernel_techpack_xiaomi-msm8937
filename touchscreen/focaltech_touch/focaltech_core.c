@@ -1404,11 +1404,9 @@ int fts_reset_proc(int hdelayms)
 {
 	FTS_DEBUG("tp reset");
 	gpio_direction_output(fts_data->pdata->reset_gpio, 0);
-	msleep(1);
+	msleep(20);
 	gpio_direction_output(fts_data->pdata->reset_gpio, 1);
-	if (hdelayms) {
-		msleep(hdelayms);
-	}
+	msleep(20);
 
 	return 0;
 }
@@ -3432,6 +3430,8 @@ static int fts_ts_suspend(struct device *dev)
 		if (ret < 0)
 			FTS_ERROR("set TP to sleep mode fail, ret=%d", ret);
 
+		msleep(20);
+
 		if (!ts_data->ic_info.is_incell) {
 #if FTS_POWER_SOURCE_CUST_EN
 			ret = fts_power_source_suspend(ts_data);
@@ -3516,9 +3516,6 @@ static int fts_ts_resume(struct device *dev)
 	}
 
 	fts_reset_proc(200);
-
-	fts_wait_tp_to_valid();
-	fts_ex_mode_recovery(ts_data);
 
 #if FTS_ESDCHECK_EN
 	fts_esdcheck_resume();
