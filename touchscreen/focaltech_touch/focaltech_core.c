@@ -3370,6 +3370,9 @@ static int fts_ts_suspend(struct device *dev)
 	int i = 0;
 #endif
 
+	FTS_INFO("SKIP SUSPEND");
+	return 0;
+
 	FTS_FUNC_ENTER();
 	if (ts_data->suspended) {
 		FTS_INFO("Already in suspend state");
