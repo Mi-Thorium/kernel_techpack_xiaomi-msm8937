@@ -47,9 +47,8 @@
 #include <linux/input/sweep2wake.h>
 #endif
 
-#ifdef CONFIG_TOUCHSCREEN_XIAOMI_DT2W
-extern bool xiaomi_dt2w_enable;
-#endif
+#include <xiaomi-msm8937/mach.h>
+#include <xiaomi-msm8937/touchscreen.h>
 
 #if CTP_CHARGER_DETECT
 #include <linux/power_supply.h>
@@ -961,7 +960,7 @@ static int ft5x06_fw_upgrade_start(struct i2c_client *client,
 
 		w_buf[0] = FT_UPGRADE_55;
 		ft5x06_i2c_write(client, &w_buf[0], 1);
-		usleep(FT_55_AA_DLY_NS);
+		usleep_range(FT_55_AA_DLY_NS, FT_55_AA_DLY_NS);
 		w_buf[0] = FT_UPGRADE_AA;
 		ft5x06_i2c_write(client, &w_buf[0], 1);
 
@@ -2634,10 +2633,6 @@ int get_boot_mode(struct i2c_client *client)
 	return 0;
 }
 
-#ifdef CONFIG_MACH_XIAOMI
-extern bool xiaomi_ts_probed;
-#endif
-
 static int ft5x06_ts_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
@@ -2838,7 +2833,7 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 
 	err = request_threaded_irq(client->irq, NULL,
 			ft5x06_ts_interrupt,
-			IRQF_TRIGGER_FALLING | IRQF_ONESHOT | IRQF_PERF_CRITICAL,
+			IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
 			client->dev.driver->name, data);
 	if (err) {
 		dev_err(&client->dev, "request irq failed\n");
@@ -3012,9 +3007,7 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 #endif
 	enable_irq(data->client->irq);
 
-#ifdef CONFIG_MACH_XIAOMI
-	xiaomi_ts_probed = true;
-#endif
+	xiaomi_msm8937_touchscreen_is_probed = true;
 
 	return 0;
 
@@ -3083,9 +3076,7 @@ static int ft5x06_ts_remove(struct i2c_client *client)
         sysfs_remove_group(&client->dev.kobj, &ft5x06_ts_attr_group);
 	input_unregister_device(data->input_dev);
 
-#ifdef CONFIG_MACH_XIAOMI
-	xiaomi_ts_probed = false;
-#endif
+	xiaomi_msm8937_touchscreen_is_probed = false;
 
 	return 0;
 }
@@ -3171,15 +3162,12 @@ static struct i2c_driver ft5x06_ts_driver = {
 	.id_table = ft5x06_ts_id,
 };
 
-static int __init ft5x06_ts_init(void)
+int xiaomi_msm8937_touchscreen_ft5336_init(void)
 {
-#ifdef CONFIG_MACH_XIAOMI
-	if (xiaomi_series_read() != XIAOMI_SERIES_LANDTONI)
+	if (xiaomi_msm8937_mach_get() != XIAOMI_MSM8937_MACH_LAND && xiaomi_msm8937_mach_get() != XIAOMI_MSM8937_MACH_SANTONI)
 		return -ENODEV;
-#endif
 	return i2c_add_driver(&ft5x06_ts_driver);
 }
-module_init(ft5x06_ts_init);
 
 static void __exit ft5x06_ts_exit(void)
 {

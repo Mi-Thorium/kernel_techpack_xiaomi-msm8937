@@ -23,6 +23,9 @@ EXPORT_SYMBOL(xiaomi_msm8937_touchscreen_is_probed);
 #if IS_ENABLED(CONFIG_TOUCHSCREEN_ATMEL308U_MI8937)
 extern int xiaomi_msm8937_touchscreen_mxt_init(void);
 #endif
+#if IS_ENABLED(CONFIG_TOUCHSCREEN_FT5336_MI8937)
+extern int xiaomi_msm8937_touchscreen_ft5336_init(void);
+#endif
 #if IS_ENABLED(CONFIG_TOUCHSCREEN_FTS_MI8937)
 extern int xiaomi_msm8937_touchscreen_fts_ts_init(void);
 #endif
@@ -57,6 +60,9 @@ static int __init xiaomi_msm8937_touchscreen_init(void)
 
 #if IS_ENABLED(CONFIG_TOUCHSCREEN_ATMEL308U_MI8937)
 	xiaomi_msm8937_touchscreen_mxt_init();
+#endif
+#if IS_ENABLED(CONFIG_TOUCHSCREEN_FT5336_MI8937)
+	xiaomi_msm8937_touchscreen_ft5336_init();
 #endif
 #if IS_ENABLED(CONFIG_TOUCHSCREEN_FTS_MI8937)
 	xiaomi_msm8937_touchscreen_fts_ts_init();
