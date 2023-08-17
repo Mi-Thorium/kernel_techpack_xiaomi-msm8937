@@ -42,7 +42,7 @@ static int xiaomi_msm8937_touchscreen_toggle_enable_dt2w(struct ctl_table *table
 
 	if (IS_ERR_OR_NULL(xiaomi_msm8937_touchscreen_operations) ||
 		IS_ERR_OR_NULL(xiaomi_msm8937_touchscreen_operations->enable_dt2w))
-		return -EFAULT;
+		return 0;
 
 	rc = proc_dointvec(table, write, buffer, lenp, ppos);
 
@@ -86,7 +86,7 @@ static int xiaomi_msm8937_touchscreen_toggle_disable_keys(struct ctl_table *tabl
 
 	if (IS_ERR_OR_NULL(xiaomi_msm8937_touchscreen_operations) ||
 		IS_ERR_OR_NULL(xiaomi_msm8937_touchscreen_operations->disable_keys))
-		return -EFAULT;
+		return 0;
 
 	rc = proc_dointvec(table, write, buffer, lenp, ppos);
 
