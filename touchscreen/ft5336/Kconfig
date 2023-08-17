@@ -2,4 +2,4 @@
 config TOUCHSCREEN_FT5336_MI8937
 	tristate "FOCALTECH FT5336 touchpanel driver"
 	depends on INPUT_TOUCHSCREEN
-	default n
+	default y
