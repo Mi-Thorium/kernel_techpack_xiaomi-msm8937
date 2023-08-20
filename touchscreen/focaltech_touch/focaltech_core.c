@@ -1429,7 +1429,7 @@ void fts_irq_disable(void)
 		else
 			disable_irq_nosync(fts_data->irq);
 #else
-		disable_irq_nosync(fts_data->irq);
+		disable_irq(fts_data->irq);
 #endif
 		fts_data->irq_disabled = true;
 	}
