@@ -2285,6 +2285,7 @@ err_pinctrl_get:
 static int fts_pinctrl_select_normal(struct fts_ts_data *ts)
 {
 	int ret = 0;
+	FTS_FUNC_ENTER();
 
 	if (ts->pinctrl && ts->pins_active) {
 		ret = pinctrl_select_state(ts->pinctrl, ts->pins_active);
@@ -2293,12 +2294,14 @@ static int fts_pinctrl_select_normal(struct fts_ts_data *ts)
 		}
 	}
 
+	FTS_FUNC_EXIT();
 	return ret;
 }
 
 static int fts_pinctrl_select_suspend(struct fts_ts_data *ts)
 {
 	int ret = 0;
+	FTS_FUNC_ENTER();
 
 	if (ts->pinctrl && ts->pins_suspend) {
 		ret = pinctrl_select_state(ts->pinctrl, ts->pins_suspend);
@@ -2307,6 +2310,7 @@ static int fts_pinctrl_select_suspend(struct fts_ts_data *ts)
 		}
 	}
 
+	FTS_FUNC_EXIT();
 	return ret;
 }
 
@@ -2552,6 +2556,7 @@ static int fts_power_source_suspend(struct fts_ts_data *ts_data)
 static int fts_power_source_resume(struct fts_ts_data *ts_data)
 {
 	int ret = 0;
+	FTS_FUNC_ENTER();
 
 #if FTS_PINCTRL_EN
 	fts_pinctrl_select_normal(ts_data);
@@ -2562,6 +2567,7 @@ static int fts_power_source_resume(struct fts_ts_data *ts_data)
 		FTS_ERROR("power on fail, ret=%d", ret);
 	}
 
+	FTS_FUNC_EXIT();
 	return ret;
 }
 #endif /* FTS_POWER_SOURCE_CUST_EN */
@@ -3350,6 +3356,7 @@ static bool ev_btn_status = false;
 static bool fts_ts_irq_active = false;
 static void fts_ts_irq_handler(int irq, bool active)
 {
+	FTS_FUNC_ENTER();
 	if (active) {
 		if (!fts_ts_irq_active) {
 			enable_irq_wake(irq);
@@ -3361,6 +3368,7 @@ static void fts_ts_irq_handler(int irq, bool active)
 			fts_ts_irq_active = false;
 		}
 	}
+	FTS_FUNC_EXIT();
 }
 #endif
 
