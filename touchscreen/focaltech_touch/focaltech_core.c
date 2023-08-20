@@ -1406,7 +1406,7 @@ int fts_reset_proc(int hdelayms)
 {
 	FTS_DEBUG("tp reset");
 	gpio_direction_output(fts_data->pdata->reset_gpio, 0);
-	msleep(1);
+	msleep(20);
 	gpio_direction_output(fts_data->pdata->reset_gpio, 1);
 	if (hdelayms) {
 		msleep(hdelayms);
