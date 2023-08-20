@@ -2411,6 +2411,11 @@ static int fts_ts_enable_reg(struct fts_ts_data *ts_data, bool enable)
 {
 	int ret = 0;
 
+	if (!enable) {
+		FTS_DEBUG("do not disable regulators uwu");
+		return 0;
+	}
+
 	if (IS_ERR_OR_NULL(ts_data->vdd)) {
 		FTS_ERROR("vdd is invalid");
 		return -EINVAL;
