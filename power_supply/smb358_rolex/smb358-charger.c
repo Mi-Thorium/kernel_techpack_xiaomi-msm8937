@@ -80,6 +80,13 @@
 #define STATUS_D_REG			0x3E
 #define STATUS_E_REG			0x3F
 
+/* Debug registers */
+#define LAST_CNFG_REG	0x13
+#define FIRST_CMD_REG	0x30
+#define LAST_CMD_REG	0x33
+#define FIRST_STATUS_REG	0x35
+#define LAST_STATUS_REG		0x3F
+
 /* Config bits */
 #define CHG_INHI_EN_MASK			BIT(1)
 #define CHG_INHI_EN_BIT				BIT(1)
@@ -2518,7 +2525,6 @@ static void smb358_external_power_changed(struct power_supply *psy)
 }
 
 #if defined(CONFIG_DEBUG_FS)
-#define LAST_CNFG_REG	0x13
 static int show_cnfg_regs(struct seq_file *m, void *data)
 {
 	struct smb358_charger *chip = m->private;
@@ -2550,8 +2556,6 @@ static const struct file_operations cnfg_debugfs_ops = {
 	.release	= single_release,
 };
 
-#define FIRST_CMD_REG	0x30
-#define LAST_CMD_REG	0x33
 static int show_cmd_regs(struct seq_file *m, void *data)
 {
 	struct smb358_charger *chip = m->private;
@@ -2583,8 +2587,6 @@ static const struct file_operations cmd_debugfs_ops = {
 	.release	= single_release,
 };
 
-#define FIRST_STATUS_REG	0x35
-#define LAST_STATUS_REG		0x3F
 static int show_status_regs(struct seq_file *m, void *data)
 {
 	struct smb358_charger *chip = m->private;
@@ -3470,7 +3472,9 @@ static int smb358_charger_remove(struct i2c_client *client)
 
 	mutex_destroy(&chip->irq_complete);
 	wakeup_source_unregister(chip->wakeup_source_hightemp);
+#if defined(CONFIG_DEBUG_FS)
 	debugfs_remove_recursive(chip->debug_root);
+#endif
 
 	alarm_cancel(&chip->batt_temp_alarm);
 	cancel_work_sync(&chip->batt_temp_work);
