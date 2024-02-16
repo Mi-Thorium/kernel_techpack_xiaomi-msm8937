@@ -1364,12 +1364,12 @@ int fts_wait_tp_to_valid(void)
 		ret = fts_read_reg(FTS_REG_CHIP_ID, &idh);
 		ret |= fts_read_reg(FTS_REG_CHIP_ID2, &idl);
 		if (ret < 0) {
-			FTS_DEBUG("TP Not Ready,ReadData Error");
+			FTS_INFO("TP Not Ready,ReadData Error");
 		} else if (fts_data->pdata->ignore_id_check) {
-			FTS_DEBUG("Ignore ID check");
+			FTS_INFO("Ignore ID check");
 			return 0;
 		} else if ((idh != chip_idh) || (idl != chip_idl)) {
-			FTS_DEBUG("TP Not Ready,ReadData:0x%02x%02x", idh, idl);
+			FTS_INFO("TP Not Ready,ReadData:0x%02x%02x", idh, idl);
 		} else if ((idh == chip_idh) && (idl == chip_idl)) {
 			FTS_INFO("TP Ready,Device ID:0x%02x%02x", idh, idl);
 			return 0;
@@ -1406,7 +1406,7 @@ int fts_reset_proc(int hdelayms)
 {
 	FTS_DEBUG("tp reset");
 	gpio_direction_output(fts_data->pdata->reset_gpio, 0);
-	msleep(1);
+	msleep(20);
 	gpio_direction_output(fts_data->pdata->reset_gpio, 1);
 	if (hdelayms) {
 		msleep(hdelayms);
@@ -2448,8 +2448,8 @@ static int fts_power_source_ctrl(struct fts_ts_data *ts_data, int enable)
 	if (enable) {
 		if (ts_data->power_disabled) {
 			FTS_DEBUG("regulator enable !");
-			gpio_direction_output(ts_data->pdata->reset_gpio, 0);
-			msleep(1);
+			//gpio_direction_output(ts_data->pdata->reset_gpio, 0);
+			//msleep(1);
 			ret = fts_ts_enable_reg(ts_data, true);
 			if (ret)
 				FTS_ERROR("Touch reg enable failed\n");
@@ -2458,8 +2458,8 @@ static int fts_power_source_ctrl(struct fts_ts_data *ts_data, int enable)
 	} else {
 		if (!ts_data->power_disabled) {
 			FTS_DEBUG("regulator disable !");
-			gpio_direction_output(ts_data->pdata->reset_gpio, 0);
-			msleep(1);
+			//gpio_direction_output(ts_data->pdata->reset_gpio, 0);
+			msleep(20);
 			ret = fts_ts_enable_reg(ts_data, false);
 			if (ret)
 				FTS_ERROR("Touch reg disable failed");
@@ -2540,7 +2540,7 @@ static int fts_power_source_suspend(struct fts_ts_data *ts_data)
 	int ret = 0;
 
 #if FTS_PINCTRL_EN
-	fts_pinctrl_select_suspend(ts_data);
+	//fts_pinctrl_select_suspend(ts_data); // ft5336 doesn't have it
 #endif
 
 	ret = fts_power_source_ctrl(ts_data, DISABLE);
@@ -2556,7 +2556,7 @@ static int fts_power_source_resume(struct fts_ts_data *ts_data)
 	int ret = 0;
 
 #if FTS_PINCTRL_EN
-	fts_pinctrl_select_normal(ts_data);
+	//fts_pinctrl_select_normal(ts_data); // ft5336 doesn't have it
 #endif
 
 	ret = fts_power_source_ctrl(ts_data, ENABLE);
@@ -3628,18 +3628,13 @@ static int fts_ts_resume(struct device *dev)
 #endif
 	}
 
-	fts_reset_proc(200);
+	fts_reset_proc(20);
 
-	fts_wait_tp_to_valid();
+	fts_wait_tp_to_valid(); // ?
 	fts_ex_mode_recovery(ts_data);
 
 #if FTS_ESDCHECK_EN
 	fts_esdcheck_resume();
-#endif
-
-#if FTS_CHARGER_DETECT
-	if (ts_data->pdata->charger_detect)
-		queue_work(fts_data->ts_workqueue, &ts_data->charger_mode_work);
 #endif
 
 	if (ts_data->gesture_mode) {
@@ -3650,6 +3645,12 @@ static int fts_ts_resume(struct device *dev)
 
 	ts_data->suspended = false;
 	mutex_unlock(&ts_data->transition_lock);
+
+#if FTS_CHARGER_DETECT
+	if (ts_data->pdata->charger_detect)
+		queue_work(fts_data->ts_workqueue, &ts_data->charger_mode_work);
+#endif
+
 	FTS_FUNC_EXIT();
 	return 0;
 }
